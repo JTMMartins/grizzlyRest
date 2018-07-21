@@ -1,11 +1,17 @@
 package pt.noshio.restjava;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.ws.rs.ext.RuntimeDelegate;
 
 import org.glassfish.grizzly.http.server.HttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.jboss.weld.environment.se.Weld;
+
+
 
 
 public class Server {
@@ -21,17 +27,36 @@ public class Server {
 		HttpHandler handler = RuntimeDelegate.getInstance().createEndpoint(resourceConfig, HttpHandler.class);
 		HttpServer server = HttpServer.createSimpleServer(null, portNumber);
 		server.getServerConfiguration().addHttpHandler(handler);
-
+		
 		try {
 			server.start();
-			System.out.println("any key to stop server...");
-			System.in.read();
-			server.shutdown();
-			weld.shutdown();
+			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
-		} catch (Exception e) {
-			System.err.println(e);
+				public void run() {
+					server.shutdown();
+					weld.shutdown();
+				}
+			}));
+
+			System.out.println(String.format("Grizzly Http server started.\nTerminate with " + "CTRL+C."));
+			Thread.currentThread().join();
+		} catch (InterruptedException | IOException ex) {
+			Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
 		}
-	}
 
-}
+	}
+		}
+
+//		try {
+//			server.start();
+//			System.out.println("any key to stop server...");
+//			System.in.read();
+//			server.shutdown();
+//			weld.shutdown();
+//
+//		} catch (Exception e) {
+//			System.err.println(e);
+//		}
+//	}
+
+
