@@ -47,16 +47,5 @@ public class Server {
 	}
 		}
 
-//		try {
-//			server.start();
-//			System.out.println("any key to stop server...");
-//			System.in.read();
-//			server.shutdown();
-//			weld.shutdown();
-//
-//		} catch (Exception e) {
-//			System.err.println(e);
-//		}
-//	}
 
 
